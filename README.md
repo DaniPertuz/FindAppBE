@@ -1,6 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# FindApp
+
+![FindApp logo](./public/assets/FA_COMPLETE_Color.png)
 
 ## Descripción
 
@@ -9,7 +9,7 @@ Backend de aplicación FindApp
 ## Pasos de instalación de dependencias
 
 ```bash
-$ yarn install
+yarn install
 ```
 
 ## Ejecutar aplicación
