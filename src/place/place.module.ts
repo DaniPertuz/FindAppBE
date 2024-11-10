@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { PlaceService } from './place.service';
 import { PlaceController } from './place.controller';
-import { MongooseModule } from '@nestjs/mongoose';
 import { Place, PlaceSchema } from './entities/place.entity';
 
 @Module({
@@ -15,5 +15,6 @@ import { Place, PlaceSchema } from './entities/place.entity';
       },
     ]),
   ],
+  exports: [MongooseModule],
 })
 export class PlaceModule {}
