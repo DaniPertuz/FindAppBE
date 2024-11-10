@@ -110,7 +110,7 @@ export class PlaceService {
       };
     } catch (error) {
       throw new HttpException(
-        `Error al obtener lugares: ${error}`,
+        `Error al obtener lugares por categoría: ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -134,7 +134,7 @@ export class PlaceService {
         .select('-createdAt -updatedAt');
     } catch (error) {
       throw new HttpException(
-        `Error al obtener lugar: ${error}`,
+        `Error al obtener lugar por email: ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
