@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Place } from '../../place/entities/place.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Schema()
 export class Rating extends Document {
@@ -24,7 +25,7 @@ export class Rating extends Document {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })
-  user: string;
+  user: User;
 }
 
 export const RatingSchema = SchemaFactory.createForClass(Rating)
