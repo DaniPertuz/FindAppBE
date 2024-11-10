@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { CreateRatingDto } from './dto/create-rating.dto';
@@ -31,9 +35,8 @@ export class RatingService {
 
       return ratingDB;
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al crear evaluación: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -56,9 +59,8 @@ export class RatingService {
         ratings,
       };
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener evaluaciones: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -70,9 +72,8 @@ export class RatingService {
         .populate('user', 'name photo -_id')
         .populate('place', 'name -_id');
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener evaluación: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -86,17 +87,13 @@ export class RatingService {
       );
 
       if (!updatedRating) {
-        throw new HttpException(
-          'Evaluación no encontrada',
-          HttpStatus.NOT_FOUND,
-        );
+        throw new NotFoundException('Evaluación no encontrada');
       }
 
       return updatedRating;
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al actualizar evaluación: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

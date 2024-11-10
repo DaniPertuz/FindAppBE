@@ -1,8 +1,8 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -28,10 +28,7 @@ export class PlaceService {
         );
       }
 
-      throw new HttpException(
-        `Error al crear lugar: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException(`Error al crear lugar: ${error}`);
     }
   }
 
@@ -53,9 +50,8 @@ export class PlaceService {
         places,
       };
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugares: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -82,9 +78,8 @@ export class PlaceService {
         places,
       };
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugares populares: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -109,9 +104,8 @@ export class PlaceService {
         places,
       };
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugares por categoría: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -120,9 +114,8 @@ export class PlaceService {
     try {
       return await this.placeModel.findById(id);
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugar: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -133,9 +126,8 @@ export class PlaceService {
         .findById({ email })
         .select('-createdAt -updatedAt');
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugar por email: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -149,14 +141,13 @@ export class PlaceService {
       );
 
       if (!updatedPlace) {
-        throw new HttpException('Lugar no encontrado', HttpStatus.NOT_FOUND);
+        throw new NotFoundException('Lugar no encontrado');
       }
 
       return updatedPlace;
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al obtener lugar: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -164,10 +155,7 @@ export class PlaceService {
   async updatePlacePhoto(id: string, photo: string) {
     try {
       if (!photo || typeof photo !== 'string') {
-        throw new HttpException(
-          'No se suministró URL de foto',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new BadRequestException('No se suministró URL de foto');
       }
 
       const updatedPlace = await this.placeModel.findByIdAndUpdate(
@@ -177,17 +165,13 @@ export class PlaceService {
       );
 
       if (!updatedPlace) {
-        throw new HttpException(
-          'No se encontró el lugar',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new NotFoundException('No se encontró el lugar');
       }
 
       return updatedPlace;
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al actualizar foto: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -195,10 +179,7 @@ export class PlaceService {
   async updatePlaceStatus(id: string, status: boolean) {
     try {
       if (!status || typeof status !== 'boolean') {
-        throw new HttpException(
-          'Nuevo estado incorrecto',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new BadRequestException('Nuevo estado incorrecto');
       }
 
       return await this.placeModel.findByIdAndUpdate(
@@ -207,9 +188,8 @@ export class PlaceService {
         { new: true },
       );
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al actualizar estado del lugar: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -217,18 +197,15 @@ export class PlaceService {
   async remove(id: string) {
     try {
       const place = await this.findOne(id);
+
       if (!place) {
-        throw new HttpException(
-          'No existe el lugar con ese ID',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new NotFoundException('No existe el lugar con ese ID');
       }
 
       return await this.placeModel.findByIdAndDelete(id, { new: true });
     } catch (error) {
-      throw new HttpException(
+      throw new InternalServerErrorException(
         `Error al eliminar lugar: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
