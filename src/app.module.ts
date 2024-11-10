@@ -5,6 +5,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { envs } from './config';
 import { PlaceModule } from './place/place.module';
 import { RatingModule } from './rating/rating.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RatingModule } from './rating/rating.module';
     MongooseModule.forRoot(envs.mongoUrl),
     PlaceModule,
     RatingModule,
+    UserModule,
   ],
 })
 export class AppModule {}
