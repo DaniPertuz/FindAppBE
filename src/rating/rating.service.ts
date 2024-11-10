@@ -65,6 +65,30 @@ export class RatingService {
     }
   }
 
+  async findRatingsByUser(userID: string) {
+    try {
+      const query = { user: userID };
+
+      const [total, ratings] = await Promise.all([
+        this.ratingModel.countDocuments(query),
+        this.ratingModel
+          .find(query)
+          .populate('place', 'name rate photo -_id')
+          .select('-user -updatedAt')
+          .sort({ createdAt: -1 }),
+      ]);
+
+      return {
+        total,
+        ratings,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error al obtener evaluaciones: ${error}`,
+      );
+    }
+  }
+
   async findOne(id: string) {
     try {
       return this.ratingModel

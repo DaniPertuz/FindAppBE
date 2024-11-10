@@ -17,6 +17,11 @@ export class RatingController {
     return this.ratingService.findRatingsByPlace(id);
   }
 
+  @Get('/user/:id')
+  findRatingsByUser(@Param('id') id: string) {
+    return this.ratingService.findRatingsByUser(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ratingService.findOne(id);
