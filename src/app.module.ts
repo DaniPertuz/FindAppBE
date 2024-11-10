@@ -6,6 +6,7 @@ import { envs } from './config';
 import { PlaceModule } from './place/place.module';
 import { RatingModule } from './rating/rating.module';
 import { UserModule } from './user/user.module';
+import { JourneyModule } from './journey/journey.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     PlaceModule,
     RatingModule,
     UserModule,
+    JourneyModule,
   ],
 })
 export class AppModule {}
