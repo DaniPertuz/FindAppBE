@@ -147,7 +147,7 @@ export class PlaceService {
       return updatedPlace;
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al obtener lugar: ${error}`,
+        `Error al actualizar lugar: ${error}`,
       );
     }
   }
