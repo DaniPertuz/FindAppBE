@@ -9,6 +9,7 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { CoordsDto } from './coords.dto';
 
@@ -66,9 +67,12 @@ export class CreatePlaceDto {
 
   @IsString()
   @IsOptional()
+  @IsUrl()
   photo?: string;
 
   @IsArray()
+  @IsString({ each: true })
+  @IsUrl()
   @IsOptional()
   pics?: string[];
 

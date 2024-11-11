@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -22,6 +23,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
+  @IsUrl()
   photo?: string;
 
   @IsString()
