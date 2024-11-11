@@ -1,4 +1,5 @@
 import {
+  IsMongoId,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -8,6 +9,7 @@ import {
   Min,
 } from 'class-validator';
 import { Place } from '../../place/entities/place.entity';
+import { User } from '../../user/entities/user.entity';
 
 export class CreateRatingDto {
   @IsNumber()
@@ -21,9 +23,9 @@ export class CreateRatingDto {
   @IsOptional()
   comments: string;
 
-  @IsString()
+  @IsMongoId()
   place: Place;
 
-  @IsString()
-  user: string;
+  @IsMongoId()
+  user: User;
 }
