@@ -16,7 +16,7 @@ export class Place extends Document {
   })
   description: string;
 
-  @Prop([String])
+  @Prop({ index: true })
   category: string[];
 
   @Prop({
