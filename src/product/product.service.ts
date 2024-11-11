@@ -42,10 +42,13 @@ export class ProductService {
           .select('-createdAt -updatedAt'),
       ]);
 
-      return {
+      return this.paginationResponse(
         total,
         products,
-      };
+        limit,
+        offset,
+        `products/place/${placeId}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener productos de este lugar: ${error}`,
@@ -97,5 +100,28 @@ export class ProductService {
         `Error al eliminar producto: ${error}`,
       );
     }
+  }
+
+  private paginationResponse(
+    total: number,
+    products: Product[],
+    limit: number,
+    offset: number,
+    basePath: string,
+  ) {
+    return {
+      page: offset,
+      limit,
+      total,
+      next:
+        offset * limit < total
+          ? `${basePath}?offset=${offset + 1}&limit=${limit}`
+          : null,
+      prev:
+        offset - 1 > 0
+          ? `${basePath}?offset=${offset - 1}&limit=${limit}`
+          : null,
+      products,
+    };
   }
 }

@@ -26,18 +26,26 @@ export class JourneyService {
 
   async findJourneysByPlace(placeID: string, paginationDto: PaginationDto) {
     try {
-      const { limit = 10, offset = 0 } = paginationDto;
       const query = { place: placeID };
+      const { limit = 10, offset = 0 } = paginationDto;
 
-      const [total, journeys] = await Promise.all([
-        this.journeyModel.countDocuments(query),
-        this.journeyModel.find(query).limit(limit).skip(offset),
-      ]);
+      const total = await this.journeyModel.countDocuments(query);
 
-      return {
+      const journeys = await this.journeyModel
+        .find(query)
+        .limit(limit)
+        .skip(offset)
+        .select('-createdAt -updatedAt');
+
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(
         total,
         journeys,
-      };
+        limit,
+        page,
+        `journeys/place/${placeID}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener viajes por lugar: ${error}`,
@@ -52,13 +60,22 @@ export class JourneyService {
 
       const [total, journeys] = await Promise.all([
         this.journeyModel.countDocuments(query),
-        this.journeyModel.find(query).limit(limit).skip(offset),
+        this.journeyModel
+          .find(query)
+          .limit(limit)
+          .skip(offset)
+          .select('-createdAt -updatedAt'),
       ]);
 
-      return {
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(
         total,
         journeys,
-      };
+        limit,
+        page,
+        `journeys/user/${userID}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener viajes por usuario: ${error}`,
@@ -90,5 +107,28 @@ export class JourneyService {
         `Error al eliminar viaje: ${error}`,
       );
     }
+  }
+
+  private paginationResponse(
+    total: number,
+    journeys: Journey[],
+    limit: number,
+    offset: number,
+    basePath: string,
+  ) {
+    return {
+      page: offset,
+      limit,
+      total,
+      next:
+        offset * limit < total
+          ? `${basePath}?offset=${offset + 1}&limit=${limit}`
+          : null,
+      prev:
+        offset - 1 > 0
+          ? `${basePath}?offset=${offset - 1}&limit=${limit}`
+          : null,
+      journeys,
+    };
   }
 }

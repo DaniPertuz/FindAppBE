@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
+import { PaginationDto } from '../common/pagination.dto';
 
 @Controller('ratings')
 export class RatingController {
@@ -13,13 +22,19 @@ export class RatingController {
   }
 
   @Get('/place/:id')
-  findRatingsByPlace(@Param('id') id: string) {
-    return this.ratingService.findRatingsByPlace(id);
+  findRatingsByPlace(
+    @Param('id') id: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.ratingService.findRatingsByPlace(id, paginationDto);
   }
 
   @Get('/user/:id')
-  findRatingsByUser(@Param('id') id: string) {
-    return this.ratingService.findRatingsByUser(id);
+  findRatingsByUser(
+    @Param('id') id: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.ratingService.findRatingsByUser(id, paginationDto);
   }
 
   @Get(':id')

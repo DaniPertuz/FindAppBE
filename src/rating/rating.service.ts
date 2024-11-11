@@ -9,6 +9,7 @@ import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { Place } from '../place/entities/place.entity';
 import { Rating } from './entities/rating.entity';
+import { PaginationDto } from '../common/pagination.dto';
 
 @Injectable()
 export class RatingService {
@@ -41,23 +42,29 @@ export class RatingService {
     }
   }
 
-  async findRatingsByPlace(placeID: string) {
+  async findRatingsByPlace(placeID: string, paginationDto: PaginationDto) {
     try {
       const query = { place: placeID };
+      const { limit = 10, offset = 0 } = paginationDto;
 
       const [total, ratings] = await Promise.all([
         this.ratingModel.countDocuments(query),
         this.ratingModel
           .find(query)
-          .populate('user', 'name photo -_id')
-          .select('-place -updatedAt')
-          .sort({ createdAt: -1 }),
+          .limit(limit)
+          .skip(offset)
+          .select('-createdAt -updatedAt'),
       ]);
 
-      return {
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(
         total,
         ratings,
-      };
+        limit,
+        page,
+        `ratings/place/${placeID}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener evaluaciones: ${error}`,
@@ -65,23 +72,29 @@ export class RatingService {
     }
   }
 
-  async findRatingsByUser(userID: string) {
+  async findRatingsByUser(userID: string, paginationDto: PaginationDto) {
     try {
       const query = { user: userID };
+      const { limit = 10, offset = 0 } = paginationDto;
 
       const [total, ratings] = await Promise.all([
         this.ratingModel.countDocuments(query),
         this.ratingModel
           .find(query)
-          .populate('place', 'name rate photo -_id')
-          .select('-user -updatedAt')
-          .sort({ createdAt: -1 }),
+          .limit(limit)
+          .skip(offset)
+          .select('-createdAt -updatedAt'),
       ]);
 
-      return {
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(
         total,
         ratings,
-      };
+        limit,
+        page,
+        `ratings/user/${userID}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener evaluaciones: ${error}`,
@@ -130,5 +143,28 @@ export class RatingService {
     ]);
 
     return average[0] ? average[0] : { average: 0 };
+  }
+
+  private paginationResponse(
+    total: number,
+    ratings: Rating[],
+    limit: number,
+    offset: number,
+    basePath: string,
+  ) {
+    return {
+      page: offset,
+      limit,
+      total,
+      next:
+        offset * limit < total
+          ? `${basePath}?offset=${offset + 1}&limit=${limit}`
+          : null,
+      prev:
+        offset - 1 > 0
+          ? `${basePath}?offset=${offset - 1}&limit=${limit}`
+          : null,
+      ratings,
+    };
   }
 }

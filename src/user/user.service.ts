@@ -45,13 +45,12 @@ export class UserService {
           .find(query)
           .limit(limit)
           .skip(offset)
-          .sort({ name: 1, email: 1 }),
+          .select('-createdAt -updatedAt'),
       ]);
 
-      return {
-        total,
-        users,
-      };
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(total, users, limit, page, 'users');
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener usuarios: ${error}`,
@@ -70,13 +69,12 @@ export class UserService {
           .find(query)
           .limit(limit)
           .skip(offset)
-          .sort({ name: 1, email: 1 }),
+          .select('-createdAt -updatedAt'),
       ]);
 
-      return {
-        total,
-        users,
-      };
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
+
+      return this.paginationResponse(total, users, limit, page, 'users/roles');
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener usuarios por roles ${roles}: ${error}`,
@@ -138,5 +136,28 @@ export class UserService {
         `Error al eliminar usuario: ${error}`,
       );
     }
+  }
+
+  private paginationResponse(
+    total: number,
+    users: User[],
+    limit: number,
+    offset: number,
+    basePath: string,
+  ) {
+    return {
+      page: offset,
+      limit,
+      total,
+      next:
+        offset * limit < total
+          ? `${basePath}?offset=${offset + 1}&limit=${limit}`
+          : null,
+      prev:
+        offset - 1 > 0
+          ? `${basePath}?offset=${offset - 1}&limit=${limit}`
+          : null,
+      users,
+    };
   }
 }

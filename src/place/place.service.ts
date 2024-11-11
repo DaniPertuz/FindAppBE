@@ -45,10 +45,7 @@ export class PlaceService {
           .sort({ premium: -1 }),
       ]);
 
-      return {
-        total,
-        places,
-      };
+      return this.paginationResponse(total, places, limit, offset, '/places');
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener lugares: ${error}`,
@@ -73,10 +70,13 @@ export class PlaceService {
           .sort({ premium: -1 }),
       ]);
 
-      return {
+      return this.paginationResponse(
         total,
         places,
-      };
+        limit,
+        offset,
+        '/places/popular',
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener lugares populares: ${error}`,
@@ -95,14 +95,17 @@ export class PlaceService {
           .find(query)
           .limit(limit)
           .skip(offset)
-          .sort({ premium: -1 })
           .select('-createdAt -updatedAt'),
       ]);
+      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
 
-      return {
+      return this.paginationResponse(
         total,
         places,
-      };
+        limit,
+        page,
+        `/places/category/${category.replaceAll(' ', '%20')}`,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener lugares por categoría: ${error}`,
@@ -208,5 +211,28 @@ export class PlaceService {
         `Error al eliminar lugar: ${error}`,
       );
     }
+  }
+
+  private paginationResponse(
+    total: number,
+    places: Place[],
+    limit: number,
+    offset: number,
+    basePath: string,
+  ) {
+    return {
+      page: offset,
+      limit,
+      total,
+      next:
+        offset * limit < total
+          ? `${basePath}?offset=${offset + 1}&limit=${limit}`
+          : null,
+      prev:
+        offset - 1 > 0
+          ? `${basePath}?offset=${offset - 1}&limit=${limit}`
+          : null,
+      places,
+    };
   }
 }
