@@ -16,7 +16,9 @@ export class User extends Document {
   })
   email: string;
 
-  @Prop()
+  @Prop({
+    select: false,
+  })
   password: string;
 
   @Prop()
