@@ -4,12 +4,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../common/pagination.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -18,9 +19,19 @@ export class UserService {
     private readonly userModel: Model<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async register(createUserDto: CreateUserDto) {
     try {
-      return await this.userModel.create(createUserDto);
+      const { password, ...userData } = createUserDto;
+      const user = await this.userModel.create({
+        ...userData,
+        password: bcrypt.hashSync(password, 10),
+      });
+
+      await user.save();
+      const userObject = user.toObject();
+      delete userObject.password;
+
+      return userObject;
     } catch (error) {
       if (error.code === 11000) {
         throw new BadRequestException(
