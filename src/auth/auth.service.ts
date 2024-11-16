@@ -4,11 +4,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from '../user/entities/user.entity';
 
 @Injectable()
@@ -16,6 +18,7 @@ export class AuthService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
@@ -30,7 +33,10 @@ export class AuthService {
       const userObject = user.toObject();
       delete userObject.password;
 
-      return userObject;
+      return {
+        ...userObject,
+        token: this.getJwt({ email: user.email }),
+      };
     } catch (error) {
       if (error.code === 11000) {
         throw new BadRequestException(
@@ -44,23 +50,48 @@ export class AuthService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto) {
+  async login(loginUserDto: LoginUserDto): Promise<{
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+    status: boolean;
+    token: string;
+  }> {
     try {
       const { email, password } = loginUserDto;
 
       const user = await this.userModel
         .findOne({ email })
-        .select('email password');
+        .select('_id name email password role status');
 
       if (!user || !bcrypt.compareSync(password, user.password)) {
         throw new NotFoundException('Credenciales no son válidas');
       }
 
-      return user;
+      return {
+        _id: user._id as string,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        token: this.getJwt({ email: user.email }),
+      };
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al ingresar usuario: ${error}`,
       );
     }
+  }
+
+  async checkAuthStatus(user: User) {
+    return {
+      user,
+      token: this.getJwt({ email: user.email }),
+    };
+  }
+
+  private getJwt(payload: JwtPayload): string {
+    return this.jwtService.sign(payload);
   }
 }
