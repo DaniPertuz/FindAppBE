@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from '../auth/dto/update-user.dto';
 import { PaginationDto } from '../common/pagination.dto';
+import { bcryptAdapter } from '../plugins/brcypt.adapter';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -97,6 +98,29 @@ export class UserService {
       }
 
       return updatedUser;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error al obtener usuario: ${error}`,
+      );
+    }
+  }
+
+  async updatePassword(email: string, password: string) {
+    try {
+      const userDB = await this.findOneByEmail(email);
+
+      if (!userDB) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      const hashedPassword = bcryptAdapter.hash(password);
+      const userData = await this.userModel.findOneAndUpdate(
+        { email },
+        { password: hashedPassword },
+        { new: true, projection: { password: 0 } },
+      );
+
+      return userData;
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al obtener usuario: ${error}`,

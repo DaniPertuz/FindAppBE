@@ -33,7 +33,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Get('/user/email')
+  @Get('user/email')
   findOneByEmail(@Body() body: { email: string }) {
     return this.userService.findOneByEmail(body.email);
   }
@@ -41,6 +41,11 @@ export class UserController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
+  }
+
+  @Patch('user/password')
+  updatePassword(@Body() email: string, @Body() password: string) {
+    return this.userService.updatePassword(email, password);
   }
 
   @Delete(':id')
