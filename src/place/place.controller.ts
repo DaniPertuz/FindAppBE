@@ -45,9 +45,9 @@ export class PlaceController {
     return this.placeService.findByCategory(category, paginationDto);
   }
 
-  @Get('/popular')
-  findByEmail(@Query() paginationDto: PaginationDto) {
-    return this.placeService.findPopular(paginationDto);
+  @Get('/email/:email')
+  findByEmail(@Param('email') email: string) {
+    return this.placeService.findOneByEmail(email);
   }
 
   @Patch(':id')
