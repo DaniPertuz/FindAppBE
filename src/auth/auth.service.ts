@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
+import { bcryptAdapter } from '../plugins/brcypt.adapter';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -26,7 +26,7 @@ export class AuthService {
       const { password, ...userData } = createUserDto;
       const user = await this.userModel.create({
         ...userData,
-        password: bcrypt.hashSync(password, 10),
+        password: bcryptAdapter.hash(password),
       });
 
       await user.save();
@@ -51,11 +51,13 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto): Promise<{
-    _id: string;
-    name: string;
-    email: string;
-    role: string;
-    status: boolean;
+    user: {
+      _id: string;
+      name: string;
+      email: string;
+      role: string;
+      status: boolean;
+    };
     token: string;
   }> {
     try {
@@ -65,16 +67,18 @@ export class AuthService {
         .findOne({ email })
         .select('_id name email password role status');
 
-      if (!user || !bcrypt.compareSync(password, user.password)) {
+      if (!user || !bcryptAdapter.compare(password, user.password)) {
         throw new NotFoundException('Credenciales no son válidas');
       }
 
       return {
-        _id: user._id as string,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
+        user: {
+          _id: user._id as string,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+        },
         token: this.getJwt({ email: user.email }),
       };
     } catch (error) {
