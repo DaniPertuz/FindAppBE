@@ -126,7 +126,7 @@ export class PlaceService {
   async findOneByEmail(email: string) {
     try {
       return await this.placeModel
-        .findById({ email })
+        .findOne({ email })
         .select('-createdAt -updatedAt');
     } catch (error) {
       throw new InternalServerErrorException(
