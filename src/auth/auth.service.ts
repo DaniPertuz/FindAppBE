@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -60,32 +60,26 @@ export class AuthService {
     };
     token: string;
   }> {
-    try {
-      const { email, password } = loginUserDto;
+    const { email, password } = loginUserDto;
 
-      const user = await this.userModel
-        .findOne({ email })
-        .select('_id name email password role status');
+    const user = await this.userModel
+      .findOne({ email })
+      .select('_id name email password role status');
 
-      if (!user || !bcryptAdapter.compare(password, user.password)) {
-        throw new NotFoundException('Credenciales no son válidas');
-      }
-
-      return {
-        user: {
-          _id: user._id as string,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          status: user.status,
-        },
-        token: this.getJwt({ email: user.email }),
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Error al ingresar usuario: ${error}`,
-      );
+    if (!user || !bcryptAdapter.compare(password, user.password)) {
+      throw new UnauthorizedException('Credenciales no son válidas');
     }
+
+    return {
+      user: {
+        _id: user._id as string,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+      token: this.getJwt({ email: user.email }),
+    };
   }
 
   async checkAuthStatus(user: User) {
