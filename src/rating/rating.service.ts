@@ -45,24 +45,26 @@ export class RatingService {
   async findRatingsByPlace(placeID: string, paginationDto: PaginationDto) {
     try {
       const query = { place: placeID };
-      const { limit = 10, offset = 0 } = paginationDto;
+      const { limit = 10, offset = 1 } = paginationDto;
 
       const [total, ratings] = await Promise.all([
         this.ratingModel.countDocuments(query),
         this.ratingModel
           .find(query)
+          .sort({ createdAt: -1 })
+          .skip((offset - 1) * limit)
           .limit(limit)
-          .skip(offset)
-          .select('-createdAt -updatedAt'),
+          .populate('user', 'name photo -_id')
+          .populate('place', 'name -_id')
+          .select('-updatedAt')
+          .exec(),
       ]);
-
-      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
 
       return this.paginationResponse(
         total,
         ratings,
         limit,
-        page,
+        offset,
         `ratings/place/${placeID}`,
       );
     } catch (error) {
@@ -81,18 +83,18 @@ export class RatingService {
         this.ratingModel.countDocuments(query),
         this.ratingModel
           .find(query)
+          .populate('user', 'name photo -_id')
+          .populate('place', 'name -_id')
           .limit(limit)
-          .skip(offset)
-          .select('-createdAt -updatedAt'),
+          .skip((offset - 1) * limit)
+          .select('-updatedAt'),
       ]);
-
-      const page = offset === 0 ? 1 : Math.floor(offset / limit) + 1;
 
       return this.paginationResponse(
         total,
         ratings,
         limit,
-        page,
+        offset,
         `ratings/user/${userID}`,
       );
     } catch (error) {
