@@ -44,8 +44,8 @@ export class UserController {
   }
 
   @Patch('user/password')
-  updatePassword(@Body() email: string, @Body() password: string) {
-    return this.userService.updatePassword(email, password);
+  updatePassword(@Body() body: { email: string; password: string }) {
+    return this.userService.updatePassword(body.email, body.password);
   }
 
   @Delete(':id')
