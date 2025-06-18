@@ -19,8 +19,8 @@ export class CreateProductDto {
   description: string;
 
   @IsArray()
-  @IsString({ each: true })
-  category: string[];
+  @IsString()
+  category: string;
 
   @IsString()
   currency: string;
