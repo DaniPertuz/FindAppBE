@@ -50,7 +50,7 @@ export class PlaceController {
     return this.placeService.findOneByEmail(email);
   }
 
-  @Patch(':id')
+  @Patch('/place/:id')
   update(@Param('id') id: string, @Body() updatePlaceDto: UpdatePlaceDto) {
     return this.placeService.update(id, updatePlaceDto);
   }
