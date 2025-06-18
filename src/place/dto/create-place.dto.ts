@@ -6,7 +6,6 @@ import {
   IsIn,
   IsNotEmpty,
   IsNumber,
-  IsNumberString,
   IsOptional,
   IsString,
   IsUrl,
@@ -22,8 +21,8 @@ export class CreatePlaceDto {
   @IsNotEmpty()
   description: string;
 
-  @IsArray()
-  category: string[];
+  @IsString()
+  category: string;
 
   @IsNotEmpty()
   @IsEmail()
@@ -38,7 +37,7 @@ export class CreatePlaceDto {
   @IsNotEmpty()
   coords: CoordsDto;
 
-  @IsNumberString()
+  @IsNumber()
   @IsNotEmpty()
   phone: string;
 
@@ -56,7 +55,7 @@ export class CreatePlaceDto {
 
   @IsString()
   @IsNotEmpty()
-  state: string;
+  cityState: string;
 
   @IsString()
   @IsNotEmpty()
@@ -71,8 +70,7 @@ export class CreatePlaceDto {
   photo?: string;
 
   @IsArray()
-  @IsString({ each: true })
-  @IsUrl()
+  @IsUrl({}, { each: true })
   @IsOptional()
   pics?: string[];
 
