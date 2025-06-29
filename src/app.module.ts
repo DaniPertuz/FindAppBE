@@ -11,6 +11,8 @@ import { RatingModule } from './rating/rating.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SearchModule } from './search/search.module';
+import { PaymentsModule } from './payments/payments.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { SearchModule } from './search/search.module';
     FavoriteModule,
     AuthModule,
     SearchModule,
+    PaymentsModule,
+    SubscriptionsModule,
   ],
 })
 export class AppModule {}
