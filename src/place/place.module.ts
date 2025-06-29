@@ -15,6 +15,6 @@ import { Place, PlaceSchema } from './entities/place.entity';
       },
     ]),
   ],
-  exports: [MongooseModule],
+  exports: [MongooseModule, PlaceService],
 })
 export class PlaceModule {}
