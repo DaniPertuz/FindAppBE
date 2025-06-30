@@ -13,7 +13,7 @@ export class Subscription extends Document {
   stripeSubscriptionId: string;
 
   @Prop({ required: true })
-  plan: number;
+  premium: number;
 
   @Prop()
   endDate?: Date;
