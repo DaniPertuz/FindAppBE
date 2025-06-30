@@ -9,6 +9,11 @@ interface EnvVars {
   STRIPE_ENDPOINT_SECRET: string;
   STRIPE_SUCCESS_URL: string;
   STRIPE_CANCEL_URL: string;
+  SMTP_HOST: string;
+  SMTP_PORT: string;
+  SMTP_USER: string;
+  SMTP_PASS: string;
+  MAIL_FROM: string;
 }
 
 const envsSchema = joi
@@ -20,6 +25,11 @@ const envsSchema = joi
     STRIPE_ENDPOINT_SECRET: joi.string().required(),
     STRIPE_SUCCESS_URL: joi.string().required(),
     STRIPE_CANCEL_URL: joi.string().required(),
+    SMTP_HOST: joi.string().required(),
+    SMTP_PORT: joi.string().required(),
+    SMTP_USER: joi.string().required(),
+    SMTP_PASS: joi.string().required(),
+    MAIL_FROM: joi.string().required(),
   })
   .unknown(true);
 
@@ -37,4 +47,9 @@ export const envs = {
   stripeEndpointSecret: envVars.STRIPE_ENDPOINT_SECRET,
   stripeSuccessUrl: envVars.STRIPE_SUCCESS_URL,
   stripeCancelUrl: envVars.STRIPE_CANCEL_URL,
+  smtpHost: envVars.SMTP_HOST,
+  smtpPort: envVars.SMTP_PORT,
+  smtpUser: envVars.SMTP_USER,
+  smtpPass: envVars.SMTP_PASS,
+  smtpFrom: envVars.MAIL_FROM,
 };
