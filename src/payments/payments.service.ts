@@ -80,15 +80,15 @@ export class PaymentsService {
           });
           await this.subscriptionsService.create({
             placeId,
-            plan,
+            premium: plan,
             stripeSubscriptionId: subscriptionId,
             stripeCustomerId: customerId,
           });
         }
 
-      default:
-        console.log(`Event ${event.type} not handled`);
-        break;
+      // default:
+      //   console.log(`Event ${event.type} not handled`);
+      //   break;
     }
 
     return res.status(200).json({ sig });
