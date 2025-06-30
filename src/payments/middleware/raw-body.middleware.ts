@@ -7,10 +7,6 @@ export function rawBodyMiddleware(
   next: NextFunction,
 ) {
   if (req.originalUrl.startsWith('/api/payments/webhook')) {
-    console.log(
-      '[Webhook Middleware] Using express.raw() for',
-      req.originalUrl,
-    );
     express.raw({ type: 'application/json' })(req, res, next);
   } else {
     next();
