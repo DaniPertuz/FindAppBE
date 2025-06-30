@@ -13,6 +13,8 @@ import { AuthModule } from './auth/auth.module';
 import { SearchModule } from './search/search.module';
 import { PaymentsModule } from './payments/payments.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { MailerService } from './mailer/mailer.service';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     SearchModule,
     PaymentsModule,
     SubscriptionsModule,
+    MailerModule,
   ],
+  providers: [MailerService],
 })
 export class AppModule {}
