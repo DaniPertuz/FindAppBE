@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import Stripe from 'stripe';
 import { envs } from '../config';
+import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { PaymentSessionDto } from './dto/payment-session.dto';
 import { Request, Response } from 'express';
 import { PlaceService } from '../place/place.service';
@@ -46,6 +47,25 @@ export class PaymentsService {
     });
 
     return session;
+  }
+
+  async cancelSubscription(dto: CancelSubscriptionDto) {
+    const { placeId } = dto;
+
+    const subscription =
+      await this.subscriptionsService.findSubscriptionByPlaceId(placeId);
+
+    if (!subscription || !subscription.stripeSubscriptionId) {
+      throw new NotFoundException(
+        'No active subscription found for this place',
+      );
+    }
+
+    await this.stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    await this.placeService.update(placeId, { premium: 1 });
   }
 
   async stripeWebhook(req: Request, res: Response) {
