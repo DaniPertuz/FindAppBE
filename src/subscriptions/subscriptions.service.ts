@@ -26,4 +26,8 @@ export class SubscriptionsService {
 
     return subscription;
   }
+
+  async findSubscriptionByPlaceId(placeId: string) {
+    return this.subscriptionModel.findOne({ placeId });
+  }
 }
