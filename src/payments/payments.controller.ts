@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
+import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { PaymentSessionDto } from './dto/payment-session.dto';
 import { Request, Response } from 'express';
 
@@ -10,6 +11,11 @@ export class PaymentsController {
   @Post('create-payment-session')
   createPaymentSession(@Body() paymentSessionDto: PaymentSessionDto) {
     return this.paymentsService.createPaymentSession(paymentSessionDto);
+  }
+
+  @Post('cancel-subscription')
+  cancelSubscription(@Body() dto: CancelSubscriptionDto) {
+    return this.paymentsService.cancelSubscription(dto);
   }
 
   @Get('success')
