@@ -1,6 +1,4 @@
 export const getPremiumHtml = (premium: number, email: string) => {
-  // const baseStyle =
-  //   'font-family: Arial, sans-serif; line-height: 1.5; background-color: #FAFAFA; border-radius: 16px; padding: 8px;';
   const premiums = {
     1: {
       title: '¡Has adquirido el Paquete Básico!',
@@ -20,6 +18,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
       <ul>
         <li>Subir hasta 2 imágenes de tus productos</li>
         <li>Subir hasta 2 videos promocionales</li>
+        <li>Registrar más canales de comunicación del lugar (Instagram & WhatsApp).</li>
         <li>Tener mayor visibilidad y priorización en nuestros motores de búsqueda</li>
       </ul>
       `,
@@ -31,6 +30,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
       <ul style="text-align: start;">
         <li>Subir imágenes ilimitadas de tus productos</li>
         <li>Subir hasta 10 videos promocionales</li>
+        <li>Registrar más canales de comunicación del lugar (Instagram & WhatsApp).</li>
         <li>Tener máxima visibilidad y posicionamiento en nuestros motores de búsqueda</li>
       </ul>
       `,
@@ -38,6 +38,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
   };
 
   const selected = premiums[premium];
+
   return `
     <html>
     <body style="margin:0; padding:0;">
@@ -55,7 +56,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
         </tr>
         <tr>
           <td align="center">
-            <p style="font-size: 12px; color: #777777; margin-top: 16px; text-align: center;">
+            <p style="font-size: 12px; color: #777777; margin-top: 16px;">
               Este correo fue enviado a <strong>${email}</strong><br/>
               Por favor no responder a esta dirección de correo electrónico, ya que es un envío automático.
             </p>
