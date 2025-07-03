@@ -14,7 +14,7 @@ export class MailerService {
   async sendMail(to: string, html: string, premium: number) {
     const premiumText =
       premium === 1 ? 'Básico' : premium === 2 ? 'Regular' : 'Premium';
-    const subject = `Gracias por tu compra en FindApp. Disfruta tu Paquete ${premiumText}.`;
+    const subject = `${premium !== 1 ? `Gracias por tu compra en FindApp. ` : ''}Disfruta tu Paquete ${premiumText}.`;
 
     return this.transporter.sendMail({
       from: mailerConfig.from,
