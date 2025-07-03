@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { envs } from '../config';
 import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { PaymentSessionDto } from './dto/payment-session.dto';
-import { Request, Response } from 'express';
 import { PlaceService } from '../place/place.service';
+import { MailerService } from '../mailer/mailer.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { getPremiumHtml } from '../utils/mailerHtml';
 
 @Injectable()
 export class PaymentsService {
@@ -14,6 +16,7 @@ export class PaymentsService {
   constructor(
     private placeService: PlaceService,
     private subscriptionsService: SubscriptionsService,
+    private mailerService: MailerService,
   ) {}
 
   async createPaymentSession(paymentSessionDto: PaymentSessionDto) {
@@ -66,6 +69,9 @@ export class PaymentsService {
     });
 
     await this.placeService.update(placeId, { premium: 1 });
+    const place = await this.placeService.findOne(placeId);
+    const html = getPremiumHtml(1, place.email);
+    await this.mailerService.sendMail(place.email, html, 1);
   }
 
   async stripeWebhook(req: Request, res: Response) {
