@@ -15,7 +15,7 @@ export class Product extends Document {
   description: string;
 
   @Prop([String])
-  category: string[];
+  categories: string[];
 
   @Prop({
     required: false,
