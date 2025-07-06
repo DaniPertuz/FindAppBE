@@ -19,7 +19,8 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto) {
     try {
-      return await this.productModel.create(createProductDto);
+      const product = await this.productModel.create(createProductDto);
+      return { product };
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al crear producto: ${error}`,
