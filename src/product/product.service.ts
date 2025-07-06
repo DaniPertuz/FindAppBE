@@ -78,7 +78,7 @@ export class ProductService {
         throw new NotFoundException('Producto no encontrado');
       }
 
-      return updatedProduct;
+      return { product: updatedProduct };
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al actualizar producto: ${error}`,
