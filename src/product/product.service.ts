@@ -23,7 +23,7 @@ export class ProductService {
       return { product };
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al crear producto: ${error}`,
+        `Error on creating product: ${error}`,
       );
     }
   }
