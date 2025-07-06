@@ -52,7 +52,7 @@ export class ProductService {
       );
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al obtener productos de este lugar: ${error}`,
+        `Error on getting products of this place: ${error}`,
       );
     }
   }
@@ -62,7 +62,7 @@ export class ProductService {
       return await this.productModel.findById(id);
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al obtener producto: ${error}`,
+        `Error on getting product: ${error}`,
       );
     }
   }
@@ -76,13 +76,13 @@ export class ProductService {
       );
 
       if (!updatedProduct) {
-        throw new NotFoundException('Producto no encontrado');
+        throw new NotFoundException('Product not found');
       }
 
       return { product: updatedProduct };
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al actualizar producto: ${error}`,
+        `Error on updating product: ${error}`,
       );
     }
   }
@@ -92,13 +92,19 @@ export class ProductService {
       const product = await this.findOne(id);
 
       if (!product) {
-        throw new NotFoundException(`No existe el producto con ID ${id}`);
+        throw new NotFoundException(`No product with ID ${id} was found`);
       }
 
-      return await this.productModel.findByIdAndDelete(id, { new: true });
+      const deletedProduct = await this.productModel.findByIdAndDelete(id);
+
+      if (!deletedProduct) {
+        throw new NotFoundException(`Unable to delete product with ID ${id}`);
+      }
+
+      return { product: deletedProduct };
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error al eliminar producto: ${error}`,
+        `Error on deleting product: ${error}`,
       );
     }
   }
