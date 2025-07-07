@@ -5,6 +5,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
       body: `
       <h4 style="font-size: 26px;">Con este plan ahora puedes:</h4>
       <ul style="text-align: start;>
+        <li>Subir 1 imagen de tu negocio</li>
         <li>Subir 1 imagen de tus productos</li>
         <li>Subir 1 video promocional</li>
         <li>Tener visibilidad básica de tu negocio en la app</li>
@@ -16,6 +17,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
       body: `
       <h4 style="font-size: 26px;">Con este plan ahora puedes:</h4>
       <ul style="text-align: start;>
+        <li>Subir hasta 2 imágenes de tu negocio</li>
         <li>Subir hasta 2 imágenes de tus productos</li>
         <li>Subir hasta 2 videos promocionales</li>
         <li>Registrar más canales de comunicación del lugar (Instagram & WhatsApp).</li>
@@ -28,6 +30,7 @@ export const getPremiumHtml = (premium: number, email: string) => {
       body: `
       <h4 style="font-size: 26px;">Con este plan ahora puedes:</h4>
       <ul style="text-align: start;">
+        <li>Subir imágenes ilimitadas de tu negocio</li>
         <li>Subir imágenes ilimitadas de tus productos</li>
         <li>Subir hasta 10 videos promocionales</li>
         <li>Registrar más canales de comunicación del lugar (Instagram & WhatsApp).</li>
